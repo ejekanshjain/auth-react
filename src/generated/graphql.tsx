@@ -125,6 +125,19 @@ export type User = {
   updatedAt: Scalars['DateTime'];
 };
 
+export type GoogleSignInMutationVariables = Exact<{
+  idToken: Scalars['String'];
+}>;
+
+
+export type GoogleSignInMutation = (
+  { __typename?: 'Mutation' }
+  & { googleSignIn?: Maybe<(
+    { __typename?: 'AuthenticatedResponse' }
+    & Pick<AuthenticatedResponse, 'userId' | 'accessToken' | 'issuedAt' | 'expiresAt'>
+  )> }
+);
+
 export type HelloQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -167,6 +180,42 @@ export type SignOutMutation = (
 );
 
 
+export const GoogleSignInDocument = gql`
+    mutation GoogleSignIn($idToken: String!) {
+  googleSignIn(idToken: $idToken) {
+    userId
+    accessToken
+    issuedAt
+    expiresAt
+  }
+}
+    `;
+export type GoogleSignInMutationFn = Apollo.MutationFunction<GoogleSignInMutation, GoogleSignInMutationVariables>;
+
+/**
+ * __useGoogleSignInMutation__
+ *
+ * To run a mutation, you first call `useGoogleSignInMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useGoogleSignInMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [googleSignInMutation, { data, loading, error }] = useGoogleSignInMutation({
+ *   variables: {
+ *      idToken: // value for 'idToken'
+ *   },
+ * });
+ */
+export function useGoogleSignInMutation(baseOptions?: Apollo.MutationHookOptions<GoogleSignInMutation, GoogleSignInMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<GoogleSignInMutation, GoogleSignInMutationVariables>(GoogleSignInDocument, options);
+      }
+export type GoogleSignInMutationHookResult = ReturnType<typeof useGoogleSignInMutation>;
+export type GoogleSignInMutationResult = Apollo.MutationResult<GoogleSignInMutation>;
+export type GoogleSignInMutationOptions = Apollo.BaseMutationOptions<GoogleSignInMutation, GoogleSignInMutationVariables>;
 export const HelloDocument = gql`
     query Hello {
   hello
